@@ -140,6 +140,7 @@ let loaded_closetag=1
 " set up mappings for tag closing
 inoremap <C-_> <C-R>=GetCloseTag()<CR>
 map <C-_> a<C-_><ESC>
+imap </ <C-R>=GetPartialCloseTag()<CR>
 
 "------------------------------------------------------------------------------
 " Tag closer - uses the stringstack implementation below
@@ -221,6 +222,17 @@ function! GetLastOpenTag(unaryTagsStack)
     " At this point, we have exhausted the file and not found any opening tag
     echo "No opening tags."
     return ""
+endfunction
+
+" Returns closing tag for most recent tag, respecting the current setting
+" of b:unaryTagsStack for tags that shouldn't be closed
+function! GetPartialCloseTag()
+    let tag=GetLastOpenTag("b:unaryTagsStack")
+    if tag == ""
+        return "</"
+    else
+        return "</".tag.">"
+    endif
 endfunction
 
 " Returns closing tag for most recent unclosed tag, respecting the
