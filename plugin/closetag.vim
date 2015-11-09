@@ -129,6 +129,8 @@ if !exists("b:unaryTagsStack") || exists("b:closetag_html_style")
     else " for xsl and xsl
 	let b:unaryTagsStack=""
     endif
+else
+    let b:unaryTagsStack=""
 endif
 
 " Has this already been loaded?
