@@ -123,15 +123,19 @@
 
 " if html, don't close certain tags.  Works best if ignorecase is set.
 " otherwise, capitalize these elements according to your html editing style
-if !exists("b:unaryTagsStack") || exists("b:closetag_html_style")
-    if &filetype == "html" || exists("b:closetag_html_style")
-	let b:unaryTagsStack="area base br dd dt hr img input link meta param"
-    else " for xsl and xsl
-	let b:unaryTagsStack=""
+
+function! s:SetTagsStack()
+    if !exists("b:unaryTagsStack") || exists("b:closetag_html_style")
+        if &filetype == "html" || exists("b:closetag_html_style")
+            let b:unaryTagsStack="area base br dd dt hr img input link meta param"
+        else " for xsl and xsl
+            let b:unaryTagsStack=""
+        endif
     endif
-else
-    let b:unaryTagsStack=""
-endif
+    if !exists("b:unaryTagsStack")
+        let b:unaryTagsStack=""
+    endif
+endfunction
 
 " Has this already been loaded?
 if exists("loaded_closetag")
@@ -229,6 +233,7 @@ endfunction
 " Returns closing tag for most recent tag, respecting the current setting
 " of b:unaryTagsStack for tags that shouldn't be closed
 function! GetPartialCloseTag()
+    call s:SetTagsStack()
     let tag=GetLastOpenTag("b:unaryTagsStack")
     if tag == ""
         return "</"
@@ -240,6 +245,7 @@ endfunction
 " Returns closing tag for most recent unclosed tag, respecting the
 " current setting of b:unaryTagsStack for tags that should not be closed
 function! GetCloseTag()
+    call s:SetTagsStack()
     let tag=GetLastOpenTag("b:unaryTagsStack")
     if tag == ""
 	return ""
